@@ -1,3 +1,5 @@
+const log = require("../util/util").log;
+
 module.exports.sendRequestParam = sendRequestParam = (request, response) => {
     response.send(request.params.vegetable);
 };
@@ -18,3 +20,9 @@ module.exports.helloWorld = helloWorld = (request, response) => {
     response.send("Hello World!");
     log(request, response);
 };
+
+module.exports.sendName = sendName = (request, response) => {
+    response.render("index", {"name": request.params.name}, (error, html) => {
+        error ? response.render("error") : response.status(200).send(html);
+    });
+}
