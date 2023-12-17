@@ -22,7 +22,9 @@ module.exports.helloWorld = helloWorld = (request, response) => {
 };
 
 module.exports.sendName = sendName = (request, response) => {
-    response.render("index", {"name": request.params.name}, (error, html) => {
+    // throw new Error("BROKEN");
+    const name = request.params.name;
+    response.render("index", {name: name}, (error, html) => {
         error ? response.render("error") : response.status(200).send(html);
     });
 }
