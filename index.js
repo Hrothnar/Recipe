@@ -17,6 +17,8 @@ const ePassword = encodeURIComponent(password);
 
 const uri = `mongodb+srv://${eUsername}:${ePassword}@ecluster.rfacqfw.mongodb.net/?retryWrites=true&w=majority`;
 
+mongoose.Promise = global;
+
 mongoose.connect(uri, {
     dbName: "recipe"
 }).then(() => console.log("Successefully connected to MongoDB using Mongoose"));
@@ -48,12 +50,10 @@ app.set("view engine", "ejs");
 app.set("views", __dirname + "/app/view");
 
 app.use(cors());
-
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "connect-src http://127.0.0.1:3000");
-    next();
-});
-
+// app.use((req, res, next) => {
+//     res.setHeader("Content-Security-Policy", "connect-src http://127.0.0.1:3000");
+//     next();
+// });
 
 app.use(express.json());
 app.use(expressLayout);
@@ -73,6 +73,8 @@ app.get("/sub", subscriberController.showAllSubscribers, subscriberController.do
 app.get("/sub", subscriberController.showAllSubscribers);
 app.post("/", homeController.logBody);
 app.delete("/sub", subscriberController.removeAll);
+app.post("/sub", subscriberController.addSubscriber);
+app.get("/contact", subscriberController.showCreationForm);
 
 app.use(errorController.status404);
 app.use(errorController.status500);
