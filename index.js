@@ -6,18 +6,14 @@ const mongoose = require("mongoose");
 const Subscriber = require("./app/model/subscriber").Subscriber;
 const subscriberController = require("./app/controller/subscriber_controller");
 const cors = require("cors");
+require("dotenv").config();
 
 const port = 3000;
 
-const username = "hrothnar";
-const password = "";
-const dbName = "recipe";
-const eUsername = encodeURIComponent(username);
-const ePassword = encodeURIComponent(password);
+const eUsername = encodeURIComponent(process.env.MONGO_USERNAME);
+const ePassword = encodeURIComponent(process.env.MONGO_PASSWORD);
 
 const uri = `mongodb+srv://${eUsername}:${ePassword}@ecluster.rfacqfw.mongodb.net/?retryWrites=true&w=majority`;
-
-mongoose.Promise = global;
 
 mongoose.connect(uri, {
     dbName: "recipe"
@@ -30,10 +26,10 @@ mongoose.connect(uri, {
 //     email: "todd@mail.com"
 // }).save();
 
-Subscriber.create({
-    name: "Todd Wilson",
-    email: "todd@mail.com"
-});
+// Subscriber.create({
+//     name: "Todd Wilson",
+//     email: "todd@mail.com"
+// });
 
 // Subscriber.findOne({ name: "Todd Wilson" })
 //     .where("email", /todd/)
@@ -75,6 +71,7 @@ app.post("/", homeController.logBody);
 app.delete("/sub", subscriberController.removeAll);
 app.post("/sub", subscriberController.addSubscriber);
 app.get("/contact", subscriberController.showCreationForm);
+app.get("/ran", subscriberController.randomFill);
 
 app.use(errorController.status404);
 app.use(errorController.status500);
