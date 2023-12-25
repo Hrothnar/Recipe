@@ -19,7 +19,6 @@ module.exports.showAllSubscribers = showAllSubscribers = (request, response, nex
 };
 
 module.exports.doNextStuff = doNextStuff = (request, response) => { // final middleware in the chain
-    // response.send(request.data);
     response.render("subscriber", { subscribers: request.data }, (error, html) => {
         if (error) throw error;
         response.status(200);
@@ -53,11 +52,53 @@ module.exports.addSubscriber = addSubscriber = (request, response) => {
         zipCode
     })
         .then((value) => {
-            console.log(value);
+            // console.log(value);
             response.status(200);
-            response.sendFile("app/view/thanks.html", {root: "./"});
+            response.sendFile("app/view/thanks.html", { root: "./" });
         })
         .catch((error) => {
             console.log(error);
         });
+};
+
+module.exports.randomFill = randomFill = (request, response) => {
+
+    const subcribers = [];
+
+    subcribers.push({
+        name: "Tom",
+        email: "tom@mail.com",
+        zipCode: 55555
+    });
+
+    subcribers.push({
+        name: "Boris",
+        email: "boris@mail.com",
+        zipCode: 44444
+    });
+
+    subcribers.push({
+        name: "Riddik",
+        email: "riddik@mail.com",
+        zipCode: 33333
+    });
+
+    const creation = [];
+
+    subcribers.forEach((sub) => {
+        creation.push(Subscriber.create({
+            name: sub.name,
+            email: sub.email,
+            zipCode: sub.zipCode
+        }));
+    });
+
+    Promise.all(creation)
+        .then((value) => {
+            // console.log(value)
+            response.status(200);
+            response.send("Subcribers have been created");
+        })
+        .catch((error) => console.log(error));
+
 };
