@@ -26,10 +26,10 @@ mongoose.connect(uri, {
 //     email: "todd@mail.com"
 // }).save();
 
-Subscriber.create({
-    name: "Todd Wilson",
-    email: "todd@mail.com"
-});
+// Subscriber.create({
+//     name: "Todd Wilson",
+//     email: "todd@mail.com"
+// });
 
 // Subscriber.findOne({ name: "Todd Wilson" })
 //     .where("email", /todd/)

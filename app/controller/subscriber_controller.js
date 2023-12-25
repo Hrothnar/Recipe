@@ -53,6 +53,7 @@ module.exports.addSubscriber = addSubscriber = (request, response) => {
     })
         .then((value) => {
             // console.log(value);
+            console.log(value.getInfo());
             response.status(200);
             response.sendFile("app/view/thanks.html", { root: "./" });
         })
@@ -61,7 +62,7 @@ module.exports.addSubscriber = addSubscriber = (request, response) => {
         });
 };
 
-module.exports.randomFill = randomFill = (request, response) => {
+module.exports.randomFill = randomFill = (request, response, next) => {
 
     const subcribers = [];
 
@@ -99,6 +100,9 @@ module.exports.randomFill = randomFill = (request, response) => {
             response.status(200);
             response.send("Subcribers have been created");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            next(error);
+        });
 
 };
