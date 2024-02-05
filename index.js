@@ -8,15 +8,17 @@ const subscriberController = require("./app/controller/subscriber_controller");
 const cors = require("cors");
 require("dotenv").config();
 
-const port = 3000;
-
 const eUsername = encodeURIComponent(process.env.MONGO_USERNAME);
 const ePassword = encodeURIComponent(process.env.MONGO_PASSWORD);
+const edbName = process.env.MONGO_DATABASE_NAME
+const eURI = process.env.MONGO_URI;
+const port = process.env.PORT;
+const uri = `mongodb+srv://${eUsername}:${ePassword}@${eURI}`;
 
-const uri = `mongodb+srv://${eUsername}:${ePassword}@ecluster.rfacqfw.mongodb.net/?retryWrites=true&w=majority`;
+const app = express();
 
 mongoose.connect(uri, {
-    dbName: "recipe"
+    dbName: edbName
 }).then(() => console.log("Successefully connected to MongoDB using Mongoose"));
 
 // const db = mongoose.connection;
@@ -39,18 +41,11 @@ mongoose.connect(uri, {
 //     .where("email", /t/)
 //     .then((value) => console.log(value));
 
-const app = express();
-
 app.set("port", 3000);
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/app/view");
 
 app.use(cors());
-// app.use((req, res, next) => {
-//     res.setHeader("Content-Security-Policy", "connect-src http://127.0.0.1:3000");
-//     next();
-// });
-
 app.use(express.json());
 app.use(expressLayout);
 app.use(express.urlencoded({ extended: false }));
@@ -65,7 +60,6 @@ app.get("/name/:name", homeController.sendName);
 // });
 
 app.get("/sub", subscriberController.showAllSubscribers, subscriberController.doNextStuff);
-
 app.get("/sub", subscriberController.showAllSubscribers);
 app.post("/", homeController.logBody);
 app.delete("/sub", subscriberController.removeAll);
