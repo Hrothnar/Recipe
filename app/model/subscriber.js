@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import Mongoose from "mongoose";
 
-const subscriberSchema = mongoose.Schema({
+const subscriberSchema = Mongoose.Schema({
     name: {
         type: String,
         require: true,
@@ -23,8 +23,9 @@ subscriberSchema.methods.getInfo = function () {
 };
 
 subscriberSchema.methods.findLocalSubscribers = function () {
-    return this.model("Subscriber")
+    return this
+        .model("Subscriber")
         .find({ zipCode: this.zipCode });
 };
 
-module.exports.Subscriber = Subscriber = mongoose.model("Subscriber", subscriberSchema);
+export const Subscriber = Mongoose.model("Subscriber", subscriberSchema);
