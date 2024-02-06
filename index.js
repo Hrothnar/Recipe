@@ -1,75 +1,55 @@
-const express = require("express");
-const homeController = require("./app/controller/home_controller");
-const expressLayout = require("express-ejs-layouts");
-const errorController = require("./app/controller/error_controller");
-const mongoose = require("mongoose");
-const Subscriber = require("./app/model/subscriber").Subscriber;
-const subscriberController = require("./app/controller/subscriber_controller");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import expressLayout from "express-ejs-layouts";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotent from "dotenv";
 
-const eUsername = encodeURIComponent(process.env.MONGO_USERNAME);
-const ePassword = encodeURIComponent(process.env.MONGO_PASSWORD);
-const edbName = process.env.MONGO_DATABASE_NAME
-const eURI = process.env.MONGO_URI;
-const port = process.env.PORT;
-const uri = `mongodb+srv://${eUsername}:${ePassword}@${eURI}`;
+import * as homeController from "./app/controller/home_controller.js";
+import * as subscriberController from "./app/controller/subscriber_controller.js";
+import * as errorHandler from "./app/error/error_handler.js";
 
+dotent.config();
 const app = express();
 
-mongoose.connect(uri, {
-    dbName: edbName
-}).then(() => console.log("Successefully connected to MongoDB using Mongoose"));
-
-// const db = mongoose.connection;
-
-// new Subscriber({
-//     name: "Todd Wilson",
-//     email: "todd@mail.com"
-// }).save();
-
-// Subscriber.create({
-//     name: "Todd Wilson",
-//     email: "todd@mail.com"
-// });
-
-// Subscriber.findOne({ name: "Todd Wilson" })
-//     .where("email", /todd/)
-//     .then((value) => console.log(value));
-
-// Subscriber.deleteMany({})
-//     .where("email", /t/)
-//     .then((value) => console.log(value));
+const username = encodeURIComponent(process.env.MONGO_USERNAME);
+const password = encodeURIComponent(process.env.MONGO_PASSWORD);
+const dbName = process.env.MONGO_DATABASE_NAME
+const uri = process.env.MONGO_URI;
+const port = process.env.PORT;
+const URI = `mongodb+srv://${username}:${password}@${uri}`;
 
 app.set("port", 3000);
 app.set("view engine", "ejs");
-app.set("views", __dirname + "/app/view");
+app.set("views", import.meta.dirname + "/app/view");
 
 app.use(cors());
 app.use(express.json());
 app.use(expressLayout);
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", homeController.helloWorld);
-app.get("/item/:vegetable", homeController.sendRequestParam);
-app.get("/name/:name", homeController.sendName);
+app.get("/", homeController.showHelloWorld);
+app.get("/item/:vegetable", homeController.showRequestParam);
+app.get("/name/:name", homeController.showSentName);
+app.get("/sub", subscriberController.showAllSubsPart1, subscriberController.showAllSubsPart2);
+app.get("/contact", subscriberController.showCreationFrom);
+app.get("/populate", subscriberController.addSomeSubs);
 
-// app.get("/sub", subscriberController.showAllSubscribers, (request, response, next) => {
-//     response.send(request.data);
-//     // next();
-// });
-
-app.get("/sub", subscriberController.showAllSubscribers, subscriberController.doNextStuff);
-app.get("/sub", subscriberController.showAllSubscribers);
 app.post("/", homeController.logBody);
-app.delete("/sub", subscriberController.removeAll);
-app.post("/sub", subscriberController.addSubscriber);
-app.get("/contact", subscriberController.showCreationForm);
-app.get("/ran", subscriberController.randomFill);
+app.post("/sub", subscriberController.addSub);
 
-app.use(errorController.status404);
-app.use(errorController.status500);
+app.delete("/sub", subscriberController.removeAllSubs);
+
+app.use(errorHandler.status404);
+app.use(errorHandler.status500);
 
 app.listen(port, () => {
+    console.log("\n=================================================================");
     console.log(`The express.js server has started and is listening on port: ${app.get("port")}`);
+});
+
+mongoose.connect(URI, {
+    dbName: dbName
+}).then(() => {
+    console.log("Successefully connected to MongoDB using Mongoose")
+    console.log("=================================================================");
 });

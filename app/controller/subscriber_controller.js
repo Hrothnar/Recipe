@@ -1,70 +1,71 @@
-const mongoose = require("mongoose");
-const Subscriber = require("../model/subscriber").Subscriber;
+import { Subscriber } from "../model/subscriber.js";
+import { log } from "../util/http_logger.js";
 
-// module.exports.showAllSubscribers = showAllSubscribers = (request, response) => {
-//     Subscriber.find()
-//         .then((value) => {
-//             response.send(value);
-//         })
-//         .catch((error) => console.log(error));
-// };
-
-module.exports.showAllSubscribers = showAllSubscribers = (request, response, next) => {
-    Subscriber.find()
+export function showAllSubsPart1(request, response, next) {
+    Subscriber.find({})
         .then((value) => {
             request.data = value;
             next();
         })
-        .catch((error) => next(error))
+        .catch((error) => {
+            next(error)
+        })
 };
 
-module.exports.doNextStuff = doNextStuff = (request, response) => { // final middleware in the chain
+/**
+ * Final middleware in the chain
+ */
+export function showAllSubsPart2(request, response) {
     response.render("subscriber", { subscribers: request.data }, (error, html) => {
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
         response.status(200);
         response.send(html);
+        log(request, response);
     });
 };
 
-module.exports.removeAll = removeAll = (request, response) => {
+export function removeAllSubs(request, response) {
     Subscriber.deleteMany({})
         .then((value) => {
             response.status(204);
             response.send(`Quantity of removed records: ${value}`);
+            log(request, response);
         });
 };
 
-module.exports.showCreationForm = showCreationFrom = (request, response) => {
+export function showCreationForm(request, response) {
     response.render("contact", (error, html) => {
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
         response.status(200);
         response.send(html);
+        log(request, response);
     })
 };
 
-module.exports.addSubscriber = addSubscriber = (request, response) => {
-    const name = request.body.name;
-    const email = request.body.email;
-    const zipCode = request.body.zipCode;
+export function addSub(request, response) {
     Subscriber.create({
-        name,
-        email,
-        zipCode
+        name: request.body.name,
+        email: request.body.email, 
+        zipCode: request.body.zipCode
     })
         .then((value) => {
-            // console.log(value);
-            console.log(value.getInfo());
             response.status(200);
             response.sendFile("app/view/thanks.html", { root: "./" });
+            console.log(value.getInfo());
+            log(request, response);
         })
         .catch((error) => {
             console.log(error);
         });
 };
 
-module.exports.randomFill = randomFill = (request, response, next) => {
-
+export function addSomeSubs(request, response, next) {
     const subcribers = [];
+    const creation = [];
 
     subcribers.push({
         name: "Tom",
@@ -84,8 +85,6 @@ module.exports.randomFill = randomFill = (request, response, next) => {
         zipCode: 33333
     });
 
-    const creation = [];
-
     subcribers.forEach((sub) => {
         creation.push(Subscriber.create({
             name: sub.name,
@@ -96,13 +95,12 @@ module.exports.randomFill = randomFill = (request, response, next) => {
 
     Promise.all(creation)
         .then((value) => {
-            // console.log(value)
             response.status(200);
             response.send("Subcribers have been created");
+            log(request, response);
         })
         .catch((error) => {
             console.log(error)
             next(error);
         });
-
 };

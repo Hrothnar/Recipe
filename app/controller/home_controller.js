@@ -1,30 +1,32 @@
-const log = require("../util/util").log;
+import { log } from "../util/http_logger.js";
 
-module.exports.sendRequestParam = sendRequestParam = (request, response) => {
+export function showRequestParam(request, response) {
     response.send(request.params.vegetable);
+    log(request, response);
 };
 
-module.exports.sendSimpleResponse = sendSimpleResponse = (request, response) => {
+export function showSimpleResponse(request, response) {
     response.send("You are at this page");
+    log(request, response);
 };
 
-module.exports.logBody = logBody = (request, response) => {
+export function logBody(request, response) {
     console.log(request.body);
     console.log(request.query);
-    log(request, response);
     response.send("Your data was received and collected");
+    log(request, response);
 };
 
-module.exports.helloWorld = helloWorld = (request, response) => {
+export function showHelloWorld(request, response) {
     response.status(200);
     response.send("Hello World!");
     log(request, response);
 };
 
-module.exports.sendName = sendName = (request, response) => {
-    // throw new Error("BROKEN");
+export function showSentName(request, response) {
     const name = request.params.name;
-    response.render("index", {name: name}, (error, html) => {
+    response.render("index", { name: name }, (error, html) => {
         error ? response.render("error") : response.status(200).send(html);
     });
+    log(request, response);
 }
