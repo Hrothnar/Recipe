@@ -1,4 +1,5 @@
 import { Subscriber } from "../model/subscriber.js";
+import { Course } from "../model/course.js";
 import { log } from "../util/http_logger.js";
 
 export function showAllSubsPart1(request, response, next) {
@@ -32,6 +33,9 @@ export function removeAllSubs(request, response) {
             response.status(204);
             response.send(`Quantity of removed records: ${value}`);
             log(request, response);
+        })
+        .catch((error) => {
+            throw error;
         });
 };
 
@@ -49,7 +53,7 @@ export function showCreationForm(request, response) {
 export function addSub(request, response) {
     Subscriber.create({
         name: request.body.name,
-        email: request.body.email, 
+        email: request.body.email,
         zipCode: request.body.zipCode
     })
         .then((value) => {
@@ -102,5 +106,45 @@ export function addSomeSubs(request, response, next) {
         .catch((error) => {
             console.log(error)
             next(error);
+        });
+};
+
+export function associateSubWithCourse(request, response) {
+    Subscriber.findOne({})
+        .then((sub) => {
+            Course.findOne({})
+                .then((course) => {
+                    sub.courses.push(course);
+                    sub.save()
+                        .then((value) => {
+                            response.send(`Subscriber ${sub.name} is associated with course ${course.title} now`);
+                            console.log(`Subscriber ${sub.name} is associated with course ${course.title} now`);
+                            log(request, response);
+                            console.log(value.courses);
+                        })
+                        .catch((error) => {
+                            throw error;
+                        });
+                })
+                .catch((error) => {
+                    throw error;
+                });
+        })
+        .catch((error) => {
+            console.log(error)
+            next(error);
+        });
+};
+
+export function showOneSubWithCourse(request, response) {
+    Subscriber.findOne({ courses: { $exists: true, $ne: [] } })
+        .populate("courses")
+        .then((sub) => {
+            response.status(200);
+            response.send(sub);
+            log(request, response);
+        })
+        .catch((error) => {
+            throw error;
         });
 };
