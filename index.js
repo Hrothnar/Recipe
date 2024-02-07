@@ -7,6 +7,7 @@ import dotent from "dotenv";
 import * as homeController from "./app/controller/home_controller.js";
 import * as subscriberController from "./app/controller/subscriber_controller.js";
 import * as courseController from "./app/controller/course_controller.js";
+import * as userController from "./app/controller/user_controller.js";
 import * as errorHandler from "./app/error/error_handler.js";
 
 dotent.config();
@@ -31,12 +32,15 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", homeController.showHelloWorld);
 app.get("/item/:vegetable", homeController.showRequestParam);
 app.get("/name/:name", homeController.showSentName);
-app.get("/sub", subscriberController.showAllSubsPart1, subscriberController.showAllSubsPart2);
+app.get("/sub", subscriberController.index1, subscriberController.index2);
 app.get("/contact", subscriberController.showCreationForm);
 app.get("/populate", subscriberController.addSomeSubs);
 app.get("/course/create", courseController.createCourse);
 app.get("/sub/associate", subscriberController.associateSubWithCourse);
 app.get("/sub/assd", subscriberController.showOneSubWithCourse);
+app.get("/user/create", userController.createSomeUser);
+app.get("/user/associate", userController.associateWithSub);
+app.get("/user/index", userController.index);
 
 app.post("/", homeController.logBody);
 app.post("/sub", subscriberController.addSub);

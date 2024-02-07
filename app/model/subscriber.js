@@ -19,8 +19,11 @@ const subscriberSchema = Mongoose.Schema({
     courses: [{
         type: Mongoose.Schema.Types.ObjectId,
         ref: "Course"
-    }]
-});
+    }],
+},
+    {
+        timestamp: false
+    });
 
 subscriberSchema.methods.getInfo = function () {
     return `Name: ${this.name} | Email: ${this.email} | Zip Code: ${this.zipCode}`;

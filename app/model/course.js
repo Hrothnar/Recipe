@@ -16,6 +16,9 @@ const courseSchema = Mongoose.Schema({
         min: [10000, "Zip code is too short"],
         max: 99999
     }
-})
+},
+    {
+        timestamp: false
+    });
 
 export const Course = Mongoose.model("Course", courseSchema);

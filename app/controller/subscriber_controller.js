@@ -2,7 +2,7 @@ import { Subscriber } from "../model/subscriber.js";
 import { Course } from "../model/course.js";
 import { log } from "../util/http_logger.js";
 
-export function showAllSubsPart1(request, response, next) {
+export function index1(request, response, next) {
     Subscriber.find({})
         .then((value) => {
             request.data = value;
@@ -16,8 +16,8 @@ export function showAllSubsPart1(request, response, next) {
 /**
  * Final middleware in the chain
  */
-export function showAllSubsPart2(request, response) {
-    response.render("subscriber", { subscribers: request.data }, (error, html) => {
+export function index2(request, response) {
+    response.render("subscriber/index", { subscribers: request.data }, (error, html) => {
         if (error) {
             throw error;
         }
