@@ -64,7 +64,7 @@ export function createUser(request, response, next) {
         });
 };
 
-export function redirectAfterCreation(request, response) {
+export function redirectView(request, response) {
     response.status(300);
     response.redirect(response.locals.redirect);
 };
@@ -73,13 +73,14 @@ export function findUser(request, response, next) {
     const id = request.params.id;
     User.findOne({ _id: id })
         .then((user) => {
-            response.locals.user = user; // this action allows not to use this parameter directly in the render() function in the next middleware
+            // this action allows to use this parameter directly in the .ejs file without using in the render() function in the next middleware
+            response.locals.user = user;
             next();
             log(request, response);
         })
         .catch((error) => {
             next(error);
-        })
+        });
 };
 
 export function showAfterFinding(request, response) {
@@ -89,7 +90,59 @@ export function showAfterFinding(request, response) {
             throw error;
         }
         response.send(html);
-    })
+    });
+};
+
+export function showEditForm(request, response, next) {
+    const id = request.params.id;
+    User.findById(id)
+        .then((user) => {
+            response.render("user/edit", { user: user }, (error, html) => {
+                if (error) {
+                    next(error);
+                }
+                response.status(200);
+                response.send(html);
+            });
+        })
+        .catch((error) => {
+            next(error);
+        });
+};
+
+export function updateUser(request, response, next) {
+    const id = request.params.id;
+    const userParams = {
+        name: {
+            first: request.body.firstName,
+            last: request.body.lastName
+        },
+        email: request.body.email,
+        password: request.body.password,
+        zipCode: request.body.zipCode
+    };
+    User.findByIdAndUpdate(id, { $set: userParams })
+        .then((user) => {
+            response.locals.redirect = `/user/${id}`;
+            response.locals.user = user;
+            next();
+        })
+        .catch((error) => {
+            next(error);
+        });
+};
+
+export function removeUser(request, response, next) {
+    const id = request.params.id;
+    User.findOneAndDelete({_id: id})
+        .then(() => {
+            response.locals.redirect = "/user/index";
+            next();
+            log(request, response);
+        })
+        .catch((error) => {
+            next(error);
+        });
 };
 
 export function createSomeUser(request, response) {

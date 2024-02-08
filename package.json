@@ -4,7 +4,6 @@
   "description": "A project using express.js",
   "main": "index.js",
   "type": "module",
-  
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +20,7 @@
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
+    "method-override": "^3.0.0",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3"
   },

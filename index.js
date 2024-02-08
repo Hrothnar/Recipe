@@ -3,6 +3,7 @@ import expressLayout from "express-ejs-layouts";
 import cors from "cors";
 import Mongoose from "mongoose";
 import dotent from "dotenv";
+import methodOverride from "method-override";
 
 import * as homeController from "./app/controller/home_controller.js";
 import * as subscriberController from "./app/controller/subscriber_controller.js";
@@ -25,11 +26,14 @@ app.set("port", 3000);
 app.set("view engine", "ejs");
 app.set("views", import.meta.dirname + "/app/view");
 
+
 app.use(cors());
 app.use(express.json());
 // app.use(expressLayout);
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method", ["POST", "GET"])); //must be before app.use("/", router); 
 app.use("/", router);
+
 
 router.get("/", homeController.showHelloWorld);
 router.get("/item/:vegetable", homeController.showRequestParam);
@@ -45,16 +49,22 @@ router.get("/sub/index", subscriberController.index, subscriberController.indexV
 router.get("/user/index", userController.index, userController.indexView);
 router.get("/user/new", userController.showUserForm);
 router.get("/user/:id", userController.findUser, userController.showAfterFinding);
+router.get("/user/:id/edit", userController.showEditForm);
+
 
 router.post("/", homeController.logBody);
 router.post("/sub", subscriberController.addSub);
-router.post("/user/create", userController.createUser, userController.redirectAfterCreation);
+router.post("/user/create", userController.createUser, userController.redirectView);
 
 router.delete("/sub", subscriberController.removeAllSubs);
-router.delete("/course", courseController.removeAllCourses)
+router.delete("/course", courseController.removeAllCourses);
+router.delete("/user/:id/delete", userController.removeUser, userController.redirectView);
+
+router.put("/user/:id/update", userController.updateUser, userController.redirectView);
 
 router.use(errorHandler.status404);
 router.use(errorHandler.status500);
+
 
 app.listen(port, () => {
     console.log("\n=================================================================");

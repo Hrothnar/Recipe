@@ -33,6 +33,21 @@
             </a>
         </h4>
         <% } %>
+        <dif>
+            <a href="/user/index">View all users</a>
+        </dif>
+        <dif>
+            <a href="<%= `/user/${user._id}/edit` %>">Edit User Details</a>
+        </dif>
+        <form method="POST" action="<%= `/user/${user._id}/delete?_method=DELETE` %>">
+            <button type="submit">Delete</button>
+        </form>
+        <!-- <dif>
+            <a href="<%= `/user/${user._id}/delete?_method=DELETE` %>"
+                onclick="return confirm('Are you sure you want to delete this record?')">
+                Delete
+            </a>
+        </dif> -->
 </body>
 
 </html>
