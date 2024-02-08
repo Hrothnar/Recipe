@@ -1,4 +1,5 @@
 import Mongoose from "mongoose";
+import { Subscriber } from "./subscriber.js";
 
 const userSchema = Mongoose.Schema({
     name: {
@@ -48,5 +49,25 @@ userSchema.virtual("fullName")
     .get(function () {
         return `${this.name.first} ${this.name.last}`;
     });
+
+/**
+ * This is a mongoose hook, which is middleware too. It takes the next middleware function as a parameter and then invokes it. 
+ * This one in particular perform the code before saving model to the database.
+ */
+userSchema.pre("save", function (next) {
+    const user = this;
+    if (user.subscriberAccount === undefined) {
+        Subscriber.findOne({ email: user.email })
+            .then((sub) => {
+                user.subscriberAccount = sub;
+                next();
+            })
+            .catch((error) => {
+                next(error);
+            })
+    } else {
+        next();
+    }
+});
 
 export const User = Mongoose.model("User", userSchema);

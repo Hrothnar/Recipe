@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Subscriber Show</title>
+</head>
+
+<body>
+    <h1>User Data for <%= user.fullName %></h1>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <td><%= user.fullName %></td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td><%= user.email %></td>
+        </tr>
+        <tr>
+            <th>Zip Code</th>
+            <td><%= user.zipCode %></td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td><%= user.password %></td>
+        </tr>
+    </table>
+    <% if (user.subscriberAccount) { %>
+        <h4 class="center"> This user has a
+            <a href="<%= `/sub/${user.subscriberAccount}` %>">
+                subscribed account
+            </a>
+        </h4>
+        <% } %>
+</body>
+
+</html>
