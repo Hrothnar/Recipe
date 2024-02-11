@@ -19,6 +19,7 @@ const courseSchema = Mongoose.Schema({
 },
     {
         timestamp: false
-    });
+    }
+);
 
 export const Course = Mongoose.model("Course", courseSchema);

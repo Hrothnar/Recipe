@@ -23,7 +23,9 @@ const subscriberSchema = Mongoose.Schema({
 },
     {
         timestamp: false
-    });
+    }
+);
+
 
 subscriberSchema.methods.getInfo = function () {
     return `Name: ${this.name} | Email: ${this.email} | Zip Code: ${this.zipCode}`;
