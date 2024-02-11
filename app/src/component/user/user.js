@@ -1,5 +1,5 @@
 import Mongoose from "mongoose";
-import { Subscriber } from "./subscriber.js";
+import { Subscriber } from "../subscriber/subscriber.js";
 
 const userSchema = Mongoose.Schema({
     name: {
@@ -40,7 +40,8 @@ const userSchema = Mongoose.Schema({
 },
     {
         timestamp: true
-    });
+    }
+);
 
 /**
  * Presenting a virtual property of the User object which is not stored in the database, but could be used in code
